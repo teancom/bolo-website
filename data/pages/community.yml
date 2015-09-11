@@ -1,0 +1,54 @@
+# vim:ft=markdown:tw=76:et
+title: bolo - Community
+url: /community
+format: markdown
+--- |-
+--------------------
+# Community
+
+This is you!
+
+## Mailing Lists
+
+Sadly, we haven't set these up.
+
+## IRC
+
+We're in `#bolo` on [OFTC][oftc], stop by and chat with us some time.
+
+## Community Roadmap
+
+We're missing a lot of stuff, and we know it.  Here's the current plan:
+
+  - Set up mailling lists
+  - Write the [Getting Started](/start) guide
+  - Write up some architectural [documentation](/docs)
+  - Set up Package Builds (probably via Travis)
+  - Host APT/YUM repositories
+
+## Hacking on Bolo
+
+To get started, you'll need the bolo core and the collectors:
+
+    $ cd ~/code
+    $ git clone https://github.com/filefrog/bolo.git
+    ...
+    $ git clone https://github.com/filefrog/bolo-collectors.git
+    ...
+
+To build bolo, you'll need a recent vintage of 0MQ, [libvigor][libvigor] and
+[ctap][ctap] for the tests.
+
+bolo-collectors only needs [libvigor][libvigor].
+
+## Continuous Integration
+
+We use Travis.
+
+- bolo: [![Build Status](https://travis-ci.org/filefrog/bolo.svg?branch=master)](https://travis-ci.org/filefrog/bolo)
+- bolo-collectors: [![Build Status](https://travis-ci.org/filefrog/bolo-collectors.svg?branch=master)](https://travis-ci.org/filefrog/bolo-collectors)
+
+
+[oftc]:     http://www.oftc.net
+[libvigor]: https://github.com/filefrog/libvigor
+[ctap]:     https://github.com/filefrog/ctap

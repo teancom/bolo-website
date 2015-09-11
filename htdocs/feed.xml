@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>bolo</title>
+  <link href="http://bolo.niftylogic.com/rss.xml" rel="self" />
+  <link href="http://bolo.niftylogic.com" />
+
+  <updated>2015-09-15T00:00:00</updated>
+  <id>http://bolo.niftylogic.com</id>
+  <author><name>James Hunt</name></author>
+  <generator uri="http://verse.jameshunt.us/">Verse</generator>
+<entry>
+    <title><![CDATA[Launching Bolo]]></title>
+    <link href="/writings/launching-bolo.html?rss" />
+    <id>/writings/launching-bolo.html</id>
+    <updated>2015-09-15T00:00:00</updated>
+    <content type="html"><![CDATA[<p>This is the main post</p>]]></content>
+  </entry></feed>

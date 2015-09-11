@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<meta name="twitter:card"       content="summary"><meta name="twitter:site"       content="@niftylogic">
+<meta property="og:type"        content="article">
+<meta property="og:title"       content="Launching Bolo">
+<meta property="og:site_name"   content="bolo">
+<meta property="og:url"         content="http://bolo.niftylogic.com/writings/launching-bolo.html">
+<meta property="og:description" content="I'm sure it's enthralling and interesting">
+<title>Launching Bolo - bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li class="active"><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<div class="jumbotron featured-article">
+  <h1>Launching Bolo    <p class="text-success">Embarking On A Legendary Journey</p>
+    <p class="muted">15 Sep 2015</p></h1>
+
+  <p class="lead"><p>After months of development and internal use on special projects, it's time to launch
+bolo for real, and start building the best OSS/monitoring community around.</p></p>
+</div><p>This is the main post</p>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2015 James Hunt.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

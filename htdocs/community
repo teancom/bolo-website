@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li class="active"><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<hr>
+
+<h1>Community</h1>
+
+<p>This is you!</p>
+
+<h2>Mailing Lists</h2>
+
+<p>Sadly, we haven't set these up.</p>
+
+<h2>IRC</h2>
+
+<p>We're in <code>#bolo</code> on <a href="http://www.oftc.net">OFTC</a>, stop by and chat with us some time.</p>
+
+<h2>Community Roadmap</h2>
+
+<p>We're missing a lot of stuff, and we know it.  Here's the current plan:</p>
+
+<ul>
+<li>Set up mailling lists</li>
+<li>Write the <a href="/start">Getting Started</a> guide</li>
+<li>Write up some architectural <a href="/docs">documentation</a></li>
+<li>Set up Package Builds (probably via Travis)</li>
+<li>Host APT/YUM repositories</li>
+</ul>
+
+<h2>Hacking on Bolo</h2>
+
+<p>To get started, you'll need the bolo core and the collectors:</p>
+
+<pre><code>$ cd ~/code
+$ git clone https://github.com/filefrog/bolo.git
+...
+$ git clone https://github.com/filefrog/bolo-collectors.git
+...
+</code></pre>
+
+<p>To build bolo, you'll need a recent vintage of 0MQ, <a href="https://github.com/filefrog/libvigor">libvigor</a> and
+<a href="https://github.com/filefrog/ctap">ctap</a> for the tests.</p>
+
+<p>bolo-collectors only needs <a href="https://github.com/filefrog/libvigor">libvigor</a>.</p>
+
+<h2>Continuous Integration</h2>
+
+<p>We use Travis.</p>
+
+<ul>
+<li>bolo: <a href="https://travis-ci.org/filefrog/bolo"><img src="https://travis-ci.org/filefrog/bolo.svg?branch=master" alt="Build Status" title=""></a></li>
+<li>bolo-collectors: <a href="https://travis-ci.org/filefrog/bolo-collectors"><img src="https://travis-ci.org/filefrog/bolo-collectors.svg?branch=master" alt="Build Status" title=""></a></li>
+</ul>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2015 James Hunt.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

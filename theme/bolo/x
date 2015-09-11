@@ -1,0 +1,29 @@
+      <div class="jumbotron">
+        <h1>Build <span class="text-primary">Your</span> Monitoring System</h1>
+
+        <p class="lead">bolo is a toolkit for building distributed, scalable
+        monitoring systems. It provides a set of small, versatile components
+        that you can plug together in new and exciting ways to gather
+        metrics, mine data and keep track of your systems.</p>
+
+        <a class="btn btn-large btn-success" href="/start">Get Started</a>
+      </div>
+
+      <hr>
+
+      <div class="container-fluid marketing">
+        <div class="col-sm-6">
+          <h4><a href="/download">Download</a></h4>
+          <p>Get bolo, and get building.</p>
+
+          <h4><a href="/community">Get Involved</a></h4>
+          <p>Join the community.  It'll be fun!</p>
+        </div>
+
+        <div class="col-sm-6">
+          <h4><a href="/docs">Documentation</a></h4>
+          <p>Learn how to build an run a monitoring system.</p>
+
+          <h4><a href="/blog">Follow the Blog</a></h4>
+          <p>You never know what you might find.</p>
+        </div>

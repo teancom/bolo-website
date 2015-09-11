@@ -1,0 +1,19 @@
+[% USE date %]
+[% if featured %]
+<div class="jumbotron featured-article">
+  <h1>[% featured.attrs.title %]
+    <p class="muted">[% date.format(featured.timestamp, "%d %b %Y") %]</p></h1>
+  <p class="lead">[% featured.attrs.teaser %]</p>
+  <a class="btn btn-large btn-info" href="[% site.url %]/blog/[% featured.uuid %]">Read More</a>
+</div>
+[% end %]
+
+[% if rest.size %]
+<hr>
+<ul class="articles">
+[% FOR article IN rest %]
+  <li><a href="[% site.url %]/blog/[% article.uuid %]"><h2>[% article.attrs.title %]
+    <p class="muted">[% date.format(article.timestamp, "%d %b %Y") %]</p></h2></a></li>
+[% END %]
+</ul>
+[% end %]

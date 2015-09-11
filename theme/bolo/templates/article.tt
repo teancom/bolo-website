@@ -1,0 +1,10 @@
+[% USE date %]
+[% dometa = 'yes' %]
+<div class="jumbotron featured-article">
+  <h1>[% article.attrs.title %]
+    <p class="text-success">[% article.attrs.subtitle %]</p>
+    <p class="muted">[% date.format(article.timestamp, "%d %b %Y") %]</p></h1>
+
+  <p class="lead">[% article.attrs.teaser %]</p>
+</div>
+[% article.attrs.body %]
