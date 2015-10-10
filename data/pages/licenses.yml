@@ -15,14 +15,14 @@ makes use of other GPL'd software, notably 0MQ.
 
 As Open Source software, Bolo grows and improves by way of contributions
 from multiple developers, some working for different companies, in different
-industries and on different continents.  In order to both respect the
+industries and on different continents.  In order to respect the
 copyright of individual contributors, and to ensure that we have the legal
 right to distribute the whole software under the terms of the GPL, we
 require that all contributors sign a Contributor License Agreement, or CLA.
 
 The CLA grants us the right to distribute contributions to Bolo, lets you
 maintain your copyrights and patent claims, and protects the end users of
-Bolo as muh as possible.  Basically, it's a legal implement (not unlike the
+Bolo as much as possible.  Basically, it's a legal implement (not unlike the
 GPL itself) that ensures we can keep making Bolo available as F/OSS.
 
 Everyone contributing _legally significant_ (i.e. not typo corrections,
@@ -34,7 +34,7 @@ The CLA comes in two flavors: Individual and Corporate.
 Most people will want the [Individual Contributor License Agreement][icla]
 (often abbreviated to just *ICLA*).  The [Software Grant And Coroprate
 Contributor License Agreement][ccla], or *CCLA*, lets corporate entities
-enter into an agreement on behalf of work done by named employees.
+enter into an agreement that covers work done by named employees.
 
 # Signing Process
 
