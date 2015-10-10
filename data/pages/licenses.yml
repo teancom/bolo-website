@@ -1,0 +1,62 @@
+# vim:ft=markdown:tw=76:et
+title:   bolo - Licensing and Contributions
+url:     /licenses/index.html
+format:  markdown
+--- |-
+--------------------
+# License
+
+Bolo is licensed under the [GNU General Public License (v3)][gpl3].  The
+goal is to ensure that the software remains beneficial to the IT community
+and people interested in building monitoring systems.  On top of that, Bolo
+makes use of other GPL'd software, notably 0MQ.
+
+# Contributions
+
+As Open Source software, Bolo grows and improves by way of contributions
+from multiple developers, some working for different companies, in different
+industries and on different continents.  In order to both respect the
+copyright of individual contributors, and to ensure that we have the legal
+right to distribute the whole software under the terms of the GPL, we
+require that all contributors sign a Contributor License Agreement, or CLA.
+
+The CLA grants us the right to distribute contributions to Bolo, lets you
+maintain your copyrights and patent claims, and protects the end users of
+Bolo as muh as possible.  Basically, it's a legal implement (not unlike the
+GPL itself) that ensures we can keep making Bolo available as F/OSS.
+
+Everyone contributing _legally significant_ (i.e. not typo corrections,
+whitespace changes, etc.) must have a signed CLA on file.  Those will be
+kept on this page, in the **Signed CLAs** section, for public record.
+
+The CLA comes in two flavors: Individual and Corporate.
+
+Most people will want the [Individual Contributor License Agreement][icla]
+(often abbreviated to just *ICLA*).  The [Software Grant And Coroprate
+Contributor License Agreement][ccla], or *CCLA*, lets corporate entities
+enter into an agreement on behalf of work done by named employees.
+
+# Signing Process
+
+It's simple.
+
+1. Download a copy of either the [ICLA][icla] or the [CCLA][ccla]
+2. Print it out
+3. Fill it out (in ink)
+4. Scan / photograph it <!-- blog about ways of doing this on Mac / Android?  -->
+5. Email the PDF per the instructions in the agreement
+6. Go write some code
+
+You are of course free to start working on a pull request before signing the
+CLA, but you will need to get us the paperwork before we can merge your
+changes, no matter who splendiferous the code is.
+
+# Signed CLAs
+
+_none yet..._
+
+
+
+[gpl3]: http://www.gnu.org/licenses/gpl.html
+[icla]: https://github.com/bolo/bolo/tree/master/docs/legal/icla.txt
+[ccla]: https://github.com/bolo/bolo/tree/master/docs/legal/ccla.txt
