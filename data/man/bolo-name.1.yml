@@ -1,0 +1,65 @@
+url:       bolo-name.1.html
+name:      bolo-name
+section:   1
+date:      2016-03-27
+release:   0.2.17
+--- |-
+NAME
+    bolo name - Bolo Monitoring System Qualified Name Utility
+
+SYNOPSIS
+    bolo name check QUALIFIED NAME [...]
+
+    bolo name dump QUALIFIED-NAME [...]
+
+    bolo name fix QUALIFIED NAME [...]
+
+    bolo name match NAME1 NAME2
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    bolo query is a small utility that parses and analyzes TSDP Qualified
+    Names (i.e. type=sys,host=example01,m=cpu). It provides sub-comands for
+    checking name equivalence (including wildcard matching semantics),
+    canonicalization (via fix), validation (check) and debugging.
+
+    The following commands are understood:
+
+    check NAME(S)
+        Check the well-formedness of one or more qualified names. Evaluates
+        all arguments, and exits non-zero if any of them are invalid.
+
+    dump NAME(S)
+        Prints debugging information from the *qname* parser, which can be
+        useful to developers and system integrators wishing to understand
+        qualified names on a deeper level, and chase down bugs in the
+        implementation.
+
+    fix NAME(S)
+        Parses each qualified name, canonicalizes it (by re-ordering name
+        components), and prints it to standard out. Invalid or malformed
+        names will be skipped, and an error (for each) will be printed to
+        standard error.
+
+    match NAME1 NAME2
+        Parses both qualified names and checks if "NAME1" is equivalent to
+        "NAME2", taking into account wildcard matching semantics.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.
+

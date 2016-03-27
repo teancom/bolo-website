@@ -4,5 +4,6 @@
 <ul>
 [% FOR m IN man %]
 <li><a href="/man/[% m.attrs.url %]">[% m.attrs.name %]([% m.attrs.section %])</a></li>
+
 [% END %]
 </ul>
