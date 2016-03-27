@@ -48,4 +48,11 @@ for my $post (@all) {
 		at    => "{site}/blog/{permalink}";
 }
 
+dir "{site}/man";
+for my $doc (page->read_all(path "{data}/man")) {
+	render $doc,
+		using => "man.tt",
+		at    => "{site}/man/{permalink}";
+}
+
 1;

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<pre><code>NAME
+    bolo query - Bolo Monitoring System Controller
+
+SYNOPSIS
+    bolo query [-e tcp://host:port]
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    bolo query is a clent that reads commands from standard input, and
+    relays them to a bolo aggregator (specified by the -e flag).
+
+    The following commands are understood:
+
+    state STATE-NAME
+        Retrieve the current status and summary message of the given state.
+
+    set.keys KEY1 VALUE1 [KEY2 VALUE2 ...]
+        Set one or more keys and their values.
+
+    get.keys KEY1 [KEY2 ...]
+        Retrieve the value for one or more keys, by name.
+
+    del.keys KEY1 [KEY2 ...]
+        Delete the named keys from the bolo keystore.
+
+    search.keys PATTERN
+        List out keys that match the given pattern.
+
+    get.events [SINCE]
+        Retrieve and print the list of buffered events that occurred on or
+        after the given timestamp. If there is no timestamp, all events are
+        retrieved.
+
+    dump
+        Dump the state data, as YAML.
+
+OPTIONS
+    -e, --endpoint *tcp://host:port*
+        What endpoint to connect to. Defaults to *tcp://127.0.0.1:2998*.
+
+        Supports DNS resolution for both IPv4 and IPv6 endpoints.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.</code></pre>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2015 James Hunt.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

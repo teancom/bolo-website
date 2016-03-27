@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<pre><code>NAME
+    bolo aggr - Bolo Monitoring System Daemon
+
+SYNOPSIS
+    bolo aggr [options]
+
+    bolo aggr -c /path/to/bolo.conf
+
+    bolo aggr -F
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+OPTIONS
+    -V, --version
+        Print version and copyright information.
+
+    -c, --config */path/to/bolo.conf*
+        Specify the path to an alternate configuration file. If not given,
+        the default configuration file (/etc/bolo.conf) is used instead.
+
+    -F, --foreground
+        Normally, bolo aggr forks into the background and detaches from the
+        controlling terminal, so that it can run as a system service. This
+        flag disables that behavior. As a side effect, all logging will be
+        forced to go to standard output, regardless of what syslog facility
+        is specified in the configuration file.
+
+    -D, --dump-config
+        After reading the configuration, format it and print to standard
+        output, then exit. This can be used to verify configuration changes
+        before restarting bolo aggr.
+
+FILES
+    /etc/bolo.conf
+        Defaults configuration file that bolo aggr reads on start up. See
+        bolo.conf(5) for details.
+
+    /var/run/bolo.pid
+        In daemon mode (the default, unless -F is given), bolo aggr will
+        write its process ID to this file, so that other programs (like
+        /etc/init.d/bolo) can determine if the bolo aggr process is alive,
+        and send signals to it.
+
+        This can be changed via bolo.conf(5).
+
+    /var/lib/bolo/save.db
+        bolo aggr will periodically write everything it knows about states,
+        events, counters and samples to this file, so that the information
+        persists across program restarts, daemon crashes and system reboots.
+
+        This can be changed via bolo.conf(5).
+
+NETWORK PRESENCE
+    bolo aggr binds to to three separate endpoints when it starts up.
+
+    The listener, which normally binds to *tcp://*:2999*, fields incoming
+    requests submitting data. This port should be open to all monitored
+    hosts and devices. bolo aggr cannot be queried via the listener
+    endpoint.
+
+    The broadcast endpoint (normally bound on *tcp://*:2998*), is where
+    subscribers will connect when they wish to begin receiving broadcast
+    data. This port should only be open to other parts of your monitoring
+    system, since, by its nature, it will send out lots of potentially
+    sensitive information.
+
+    Finally, the controller endpoint (*tcp://127.0.0.1:2998*, by default),
+    allows clients like bolo query(1) to query specific state and event
+    information. Take great care when deciding what parts of your network
+    can access this port, since it affords lots of control over the bolo
+    kernel.
+
+    All three of these endpoints can be changed via bolo.conf(5).
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.</code></pre>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2015 James Hunt.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+url:       bolo-forget.1.html
+name:      bolo-forget
+section:   1
+date:      2016-03-27
+release:   0.2.17
+--- |-
+NAME
+    bolo forget - Bolo forget utility
+
+SYNOPSIS
+    bolo forget -e <endpoint> <pattern>
+
+    bolo forget -t state <pattern>
+
+    bolo forget -t counter -t rate <pattern>
+
+    bolo forget -t all --ignore <pattern>
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    bolo forget is a utility that sends controll messages to the bolo core
+    to forget matching data patterns.
+
+OPTIONS
+    pattern
+        A Perl Compatible Regular Expression to match against named
+        datapoints. A pattern is always required.
+
+    -t, --type (state|counter|sample|rate|all)
+        The type of datapoints to forget, this options can be called
+        multiple times. If no option is specified, type defaults to all.
+        Where all is state, counter, sample, and rate. Which is everything
+        except keys and events.
+
+    -e, --endpoint *tcp://host:port*
+        The bolo controller endpoint to connect to. Defaults to
+        *tcp:127.0.0.1:2998* Supports DNS resolution for both IPv4 and IPv6
+        endpoints.
+
+    -i, --ignore
+        For matched datapoints, ignore future submissions that have the
+        exact name, that was previously ignored.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.
+

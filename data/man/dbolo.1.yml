@@ -1,0 +1,182 @@
+url:       dbolo.1.html
+name:      dbolo
+section:   1
+date:      2016-03-27
+release:   0.2.17
+--- |-
+NAME
+    dbolo - Distributed Bolo Monitoring Agent
+
+SYNOPSIS
+    dbolo [OPTIONS]
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    dbolo is a standalone daemon that schedules and executes Bolo collectors
+    and submits the results up to a central Bolo core endpoint.
+
+OPTIONS
+    -V, --version
+        Print version and copyright information.
+
+    -e, --endpoint *tcp://host:port*
+        The bolo listener to connect to. Defaults to *tcp://bolo:2999*.
+        Supports DNS resolution for both IPv4 and IPv6 endpoints.
+
+    -c, --commands */path/to/dbolo.conf*
+        Path to a file containing the commands to run and their intervals.
+        Defaults to */etc/dbolo.conf*. See dbolo.conf(5) and the section
+        COMMANDS FILE, below, for details.
+
+    -s, --splay *FACTOR*
+        The initial run of each command will be randomized to start within
+        *INTERVAL* * *FACTOR* seconds. This helps more evenly distribute the
+        load on the local machine, without triggering freshness windows by
+        delaying too long.
+
+        Normally, you will want to specify a splay factor less than 1.0, to
+        avoid scheduling anomalies when dbolo is restarted.
+
+        See SCHEDULING CONCERNS, below, for more information.
+
+    -v, --verbose
+        Increase logging verbosity. In daemon mode, this bumps up the syslog
+        logging level (i.e. from INFO to WARNING or from WARNING to ERR).
+
+    -q, --quiet
+        Suppress non-critical logging and output.
+
+    -F, --foreground
+        Normally, dbolo forks into the background and detaches from the
+        controlling terminal, so that it can run as a system service. This
+        flag disables that behavior. As a side effect, all log messages will
+        be printed to the screen, bypassing syslog entirely.
+
+    -p, --pidfile */path/to/pidfile*
+        Specify where dbolo should write its PID to, for control by init
+        scripts. Defaults to /var/run/dbolo. Has no effect if -F is given.
+
+    -u, --user *USER*
+    -g, --group *GROUP*
+        User and group to drop privileges to. By default, dbolo will run as
+        root:root, which is probably not what you want.
+
+        Keep in mind that all commands executed by dbolo will be run by this
+        user and group.
+
+    -b, --beacon *tcp://host:port*
+        To enable beaconing (heartbeats) specify the 0mq Beacon endpoint of
+        the Core server.
+
+        If no endpoint is specified, beaconing is disabled, by default.
+
+    -r, --reconnects *INTERGER*
+        The maximum allowable reconnects when heartbeating is enabled,
+        otherwise normal opertion is suspended and the agent waits until a
+        beacon is recieved, or is manually restarted.
+
+        Defaults to 4.
+
+    -t, --timeout *MILLISECONDS*
+
+COMMANDS FILE
+    dbolo derives most of its behavior from its command file. This file
+    specifies what commands should be run, and how often.
+
+    Here's an example:
+
+        # /etc/dbolo.conf
+
+        # run the `linux' collector every minute
+        @60s /usr/lib/bolo/collectors/linux
+
+        # run these every 15s
+        @15s /usr/lib/bolo/collectors/process -n sshd
+        @15s /usr/lib/bolo/collectors/process -n dbolo
+
+        # run the log checks hourly
+        @1h /usr/local/collectors/log_check /var/log/messages
+        @1h /usr/local/collectors/log_check /var/log/syslog
+        @1h /usr/local/collectors/log_check /var/log/secure
+
+    Comments start with '#' and continue to the end of the line. Blank lines
+    are ignored.
+
+    Remaining lines specify how often to run a command (the
+    @-specification), and the command to run. The following time units are
+    recognized: h (hours), m (minutes) and s (seconds). Time must be
+    specifed in whole numbers; i.e. a half hour is *@30m*, not *@0.5h*.
+    Everything after the interval (excluding whitespace) is the full
+    command, with arguments, up to the newline.
+
+    Or, more rigorously:
+
+        @[0-9]+[hms] <command>\n
+
+    Line continuation is not possible; each command must be specified on
+    exactly one line, with no newlines.
+
+SCHEDULING CONCERNS
+    The dbolo scheduler ensures that checks start properly, according to
+    their configured interval, regardless of the execution time of a single
+    run. If you configure a command to run every 60s, and it takes 5s to
+    execute, there will only be a 55s delay between the end of one run and
+    the start of another. This keeps metric submission more regular, and
+    avoids the problem of scheduling drift.
+
+    It is possible to schedule command runs too close together. For example,
+    if a command takes 90s to timeout when some network endpoint it deals
+    with is offline, running it every 60s would introduce an overlap
+    condition. In this case, the scheduler behaves thusly:
+
+        Time    Action
+        ----    --------------------------------
+        0s      dbolo executes command
+                dbolo schedules next run at 0s (now) + 60s (interval) = 60s
+
+        60s     <nothing happens, command is still running>
+
+        90s     command exits
+                dbolo processes results and submits them to bolo
+                dbolo executes command (immediately)
+                  (should have run at 60s)
+                dbolo schedules next run at 90s (now) + 60s (interval) = 150s
+
+        95s     network issue clears up
+                command exits
+                dbolo processes results and submits them to bolo
+
+        150s    dbolo executes command
+
+                etc.
+
+    As you can see, at 0s, dbolo schedules the next run of the command to be
+    in *interval* seconds, at 60s. However, since the command is still
+    timing out (and hasn't exited yet), dbolo will delay execution until 90s
+    when the command does exit. At that point, execution is late, so dbolo
+    will immediately execute the command a second time, and reset the next
+    run to be in *interval* seconds, which is now at 150s.
+
+    The important thing to remember is that dbolo will wait until the
+    command executes before consulting the schedule, and will not get so far
+    behind that it cannot catch up. Imagine what happens to the schedule if
+    the command keeps timing out for another 10 or 20 runs.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.
+
