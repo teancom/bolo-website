@@ -10,7 +10,9 @@ This is you!
 
 ## Mailing Lists
 
-Sadly, we haven't set these up.
+We're currently hosting the **bolo** mailing list at [bolo@groups.io][list].
+You can view the web archives [here][list-web], and subscribe via
+[bolo+subscribe@groups.io][list-sub].
 
 ## IRC
 
@@ -52,3 +54,7 @@ We use Travis.
 [oftc]:     http://www.oftc.net
 [libvigor]: https://github.com/filefrog/libvigor
 [ctap]:     https://github.com/filefrog/ctap
+
+[list]:     mailto:bolo@groups.io
+[list-sub]: mailto:bolo+subscribe@groups.io
+[list-web]: https://groups.io/g/bolo
