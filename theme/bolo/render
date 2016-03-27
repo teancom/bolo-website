@@ -14,7 +14,7 @@ copy "{root}/content"     if exist "{root}/content";
 copy "{root}/static/*"    if exist "{root}/static";
 
 for my $page (page->read_all) {
-	$page->attrs->{section} = ($page->attrs->{url} =~ m@^(/[^/]*)@ ? $1 : '/')
+	$page->attrs->{section} = ($page->attrs->{url} =~ m{^(/[^/]*)} ? $1 : '/')
 		unless exists $page->attrs->{section};
 
 	render $page,
