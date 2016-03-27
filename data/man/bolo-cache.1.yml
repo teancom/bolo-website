@@ -1,0 +1,91 @@
+url:       bolo-cache.1.html
+name:      bolo-cache
+section:   1
+date:      2016-03-27
+release:   0.2.17
+--- |-
+NAME
+    bolo cache - Bolo Caching Daemon
+
+SYNOPSIS
+    bolo cache [options] -e tcp://bolo:2997 -B tcp://127.0.0.1:2997
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    bolo cache is a special bit of bolo infrastructure that subscribes to an
+    upstream bolo(8) instance (the *endpoint*), and caches all seen metric
+    and state PDUs while relaying them through to its own subscribers.
+    Additionally, it binds a control port that allows clients to request a
+    retransmission of all cached data, as if it were being freshly
+    broadcast, preserving timestamps.
+
+    This can be useful for stateless user tools that wish to have an
+    up-to-date copy of all known states and metrics, without having to store
+    that state in a data store.
+
+OPTIONS
+    -V, --version
+        Print version and copyright information.
+
+    -e, --endpoint *tcp://host:port*
+        The bolo broadcast endpoint. Defaults to *tcp://127.0.0.1:2997*.
+        Supports DNS resolution for both IPv4 and IPv6 endpoints.
+
+    -B, --broadcast *tcp://*:port*
+        Where to re-broadcast from. Clients connecting to this port can
+        expect the exact same protocol as the bolo(8) broadcast endpoint,
+        with the potential for repeats and re-transmissions of older PDUs.
+
+        Defaults to *tcp://127.0.0.1:2897*.
+
+    -l, --listen *tcp://*:port*
+        What address and port to bind on for the controller channel. Clients
+        can connect to this (via a PUSH socket) and submit a REPEAT PDU to
+        cause a re-broadcast of all known PDUs to all connected clients.
+
+        Defaults to *tcp://127.0.0.1:2898*.
+
+    -F, --foreground
+        By default, bolo cache will fork into the background, detach its
+        terminal and daemonize itself. This option inhibits that behavior,
+        and also stops its from setting the effective UID / GID (see -u and
+        -g).
+
+    -p, --pidfile */path/to/pidfile*
+        Specify where bolo cache should write its PID to, for control by
+        init scripts. Defaults to /var/run/bolo/cache.pid. Has no effect if
+        -F is given.
+
+    -u, --user *USERNAME*
+    -g, --group *GROUP NAME*
+        User and group to drop privileges to. By default, bolo cache will
+        run as root:root, which is probably not what you want.
+
+    -v, --verbose
+        Enable verbose mode, printing debugging information to standard
+        error.
+
+TRANSPARENT PROXY MODE
+    If you run bolo(8) and bind its broadcast endpoint to something other
+    than *tcp://*:2997* (say, for instance, *tcp://127.0.0.1:1234*), you can
+    transparently front it with bolo cache broadcasting on *tcp://*:2997*
+    and clients will never know the difference.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.
+

@@ -1,0 +1,8 @@
+[% page.attrs.body %]
+
+<h2>Man Pages</h2>
+<ul>
+[% FOR m IN man %]
+<li><a href="/man/[% m.attrs.url %]">[% m.attrs.name %]([% m.attrs.section %])</a></li>
+[% END %]
+</ul>

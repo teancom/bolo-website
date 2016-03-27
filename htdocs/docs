@@ -12,7 +12,7 @@
 <body>
 	<div class="container-narrow">
 		<div class="masthead">
-			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li class="active"><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
 			</ul>
 			<h3 class="muted">bolo</h3>
 		</div>
@@ -21,9 +21,11 @@
 <h1>Documentation</h1>
 
 <p>Coming soon</p>
+<h2>Man Pages</h2>
+<ul><li><a href="/man/bolo-aggr.1.html">bolo-aggr(1)</a></li><li><a href="/man/bolo-cache.1.html">bolo-cache(1)</a></li><li><a href="/man/bolo-forget.1.html">bolo-forget(1)</a></li><li><a href="/man/bolo-query.1.html">bolo-query(1)</a></li><li><a href="/man/bolo-send.1.html">bolo-send(1)</a></li><li><a href="/man/bolo.5.html">bolo(5)</a></li><li><a href="/man/bolo2meta.8.html">bolo2meta(8)</a></li><li><a href="/man/bolo2redis.8.html">bolo2redis(8)</a></li><li><a href="/man/dbolo.1.html">dbolo(1)</a></li><li><a href="/man/dbolo.5.html">dbolo(5)</a></li></ul>
 		<hr>
 		<div class="footer">
-			<p>&copy; 2015 James Hunt.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
 		</div>
 	</div>
 

@@ -1,0 +1,97 @@
+url:       bolo-send.1.html
+name:      bolo-send
+section:   1
+date:      2016-03-27
+release:   0.2.17
+--- |-
+NAME
+    bolo send - Bolo Monitoring System Client
+
+SYNOPSIS
+    bolo send -t state name (ok|warning|critical|unknown) message string
+
+    bolo send -t counter name [increment-value]
+
+    bolo send -t sample name value [value ...]
+
+    bolo send -t key key1=value1 key2=value2 ...
+
+    bolo send -t event name [extra description ...]
+
+    ./script | bolo send -t stream
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    bolo send is a client that connects to a bolo daemon and submits data.
+
+OPTIONS
+    -t, --type (state|counter|sample|key|event|stream)
+        Changes the behavior of bolo send. For all but *stream*, bolo send
+        will interpret the rest of its arguments as a single type of data to
+        submit.
+
+        For -t state, bolo send expects three arguments: a state name, a
+        status code (one of *ok*, *warning*, *critical* or *unknown*), and a
+        message. Any remaining arguments will be concatenated to the message
+        argument, separated by spaces (much like /bin/echo).
+
+            bolo send -t state cpu warning CPU is 96.3% used
+
+        For -t counter, provide the name of the counter and optionally, the
+        value to increment it by (which if not provided defaults to 1).
+
+            bolo send -t counter eth0.drops 44
+
+            bolo send -t counter logins
+
+        For -t sample, the name and one or more values must be provided.
+        Each value will be submitted. For example, to submit three network
+        packet/second readings:
+
+            bolo send -t sample packets-per-second  120.4  130.8  99.76
+
+        For -t key, you should supply one or more arguments, of the format
+        "key=value":
+
+            bolo send -t key hostname=host01 fqdn=host01.example.com
+
+        Finally, for -t event, all you need to provide is the event name;
+        the remaining arguments will be treated as extra data for the event,
+        separated by a single space.
+
+            bolo send -t event user.login jhacker logged in from 10.0.0.233
+
+        Stream mode (-t stream) allows the caller to submit multiple types
+        of data within a single session, by reading specially-formatted
+        lines on standard input.
+
+        Known commands for stream mode are:
+
+            STATE <timestamp> <name> (ok|warning|critical|unknown) <message>
+            COUNTER <timestamp> <name> [<increment-value>]
+            SAMPLE <timestamp> <name> <value1> [<value2> ...]
+            KEY <key>=<value> ...
+            EVENT <timestamp> <name> <extra data>
+
+    -e, --endpoint *tcp://host:port*
+        The bolo listener to connect to. Defaults to *tcp://127.0.0.1:2999*.
+        Supports DNS resolution for both IPv4 and IPv6 endpoints.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.
+

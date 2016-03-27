@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<div class="man">NAME
+    bolo2meta - Bolo Meta Performance Subscriber
+
+SYNOPSIS
+    bolo2meta
+
+    bolo2meta -e tcp://host:port -F
+
+    bolo2meta -u nobody -g nogroup --pidfile /var/run/my.pid
+
+DESCRIPTION
+    bolo is a lightweight monitoring system kernel that aggregates counter
+    data and sample readings, maintains event and state information, and
+    broadcasts its findings to all connected *bolo subscribers*. These
+    subscribers can perform a wide variety of functions, from storing metric
+    data in RRDs to sending notifications on state changes.
+
+    bolo2meta is a subscriber that listens to all data broadcast by bolo and
+    reports in new metrics about the throughput of the subscriber subsystem.
+
+OPTIONS
+    -V, --version
+        Print version and copyright information.
+
+    -e, --endpoint *tcp://host:port*
+        The bolo broadcast endpoint. Defaults to *tcp://127.0.0.1:2997*.
+        Supports DNS resolution for both IPv4 and IPv6 endpoints.
+
+    -S, --submit *tcp://host:port*
+        The bolo listener endpoint. Metrics collected by bolo2meta will be
+        submitted here, for storage and aggregation. Defaults to
+        *tcp://127.0.0.1:2999*. Supports DNS resolution for both IPv4 and
+        IPv6 endpoints.
+
+    -P, --prefix *PREFIX*
+        A string that will be used to prefix all submitted metric names.
+        Defaults to *$fqdn:sys:bolo*, where *$fqdn* is the fully-qualified
+        domain name of the local host.
+
+    -F, --foreground
+        By default, bolo2meta will fork into the background, detach its
+        terminal and daemonize itself. This option inhibits that behavior,
+        and also stops its from setting the effective UID / GID (see -u and
+        -g).
+
+    -p, --pidfile */path/to/pidfile*
+        Specify where bolo2meta should write its PID to, for control by init
+        scripts. Defaults to /var/run/bolo2meta.pid. Has no effect if -F is
+        given.
+
+    -u, --user *USERNAME*
+    -g, --group *GROUP NAME*
+        User and group to drop privileges to. By default, bolo2meta will run
+        as root:root, which is probably not what you want.
+
+    -v, --verbose
+        Enable verbose mode, printing debugging information to standard
+        error.
+
+COLLECTED METADATA
+    The following metrics are tracked and submitted back to bolo:
+
+    state
+    bogon.state
+    sample
+    bogon.sample
+    rate
+    bogon.rate
+    counter
+    bogon.counter
+    transition
+    bogon.transition
+    event
+    bogon.event
+    bogon.unknown
+
+    Each tracks the number of broadcast PDUs seen as a COUNTER. This allows
+    the bolo core to be configured however the administrator sees fit with
+    respect to windows and intervals.
+
+    The bogon.* metrics track how many malformed broadcast PDUs were seen,
+    of each type. In this context, a malformed PDU is one with the correct
+    PDU type (i.e. "STATE" or "SAMPLE") but the wrong number of data frames.
+
+    The bogon.unknown metric tracks unknown PDU types.
+
+    Ideally, all of the bogon.* metrics will always be zero. If not, the
+    broadcasting bolo core is either experiencing network problems (highly
+    unlikely, but possible) or is buggy.
+
+    Each of these metrics is submitted to the core every 5 seconds, even if
+    the value of the metric is 0.
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.</div>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

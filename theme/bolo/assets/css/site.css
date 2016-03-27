@@ -57,3 +57,11 @@ ul.articles li a p {
 .featured-article h1 p {
 	margin: 1em auto 2em auto;
 }
+
+div.man {
+	font-family: monospace;
+	white-space: pre;
+	margin: 4em 1em;
+	padding: 1em;
+	background-color: #eee;
+}

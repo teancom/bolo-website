@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<div class="man">NAME
+    dbolo.conf - Distributed Bolo Monitoring Agent commands file
+
+SYNOPSIS
+    /etc/dbolo.conf
+
+DESCRIPTION
+    dbolo(1) reads a list of commands and their execution intervals from
+    */etc/dbolo.conf* (unless a different file is specified via the -c
+    option).
+
+    Comments start with the '#' character and continue to the end of the
+    line. Blank lines are ignored.
+
+    Each command / interval is specified on a line by itself, in the
+    following form:
+
+        @<time><unit> <command>
+
+    Where <time> is a number (integers only, no fractions), <unit> is a unit
+    of time (h for hours, m for minutes or s for seconds) and <command> is
+    the full command to execute, including any arguments.
+
+EXAMPLE
+        # /etc/dbolo.conf
+
+        # run the `linux' collector every minute
+        @60s /usr/lib/bolo/collectors/linux
+
+        # run these every 15s
+        @15s /usr/lib/bolo/collectors/process -n sshd
+        @15s /usr/lib/bolo/collectors/process -n dbolo
+
+        # run the log checks hourly
+        @1h /usr/local/collectors/log_check /var/log/messages
+        @1h /usr/local/collectors/log_check /var/log/syslog
+        @1h /usr/local/collectors/log_check /var/log/secure
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.</div>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

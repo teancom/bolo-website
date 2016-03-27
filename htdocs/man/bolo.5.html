@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<div class="man">NAME
+    bolo.conf - Bolo configuration file
+
+SYNOPSIS
+    /etc/bolo.conf
+
+DESCRIPTION
+    bolo(8) reads its configuration from */etc/bolo.conf* (unless a
+    different file is specified via the -c option). This configuration file
+    consists of *global declarations* that govern how bolo behaves, *type
+    and window definitions*, and *state, sample and counter declarations*.
+
+    Comments start with the '#' character and continue to the end of the
+    line. Blank lines are ignored.
+
+  Global Declarations
+    The following configuration directives are recognized:
+
+    listener tcp://*:2999
+        What address and port to bind on, and listen for inbound data
+        submission from monitored hosts. Note: if you wish to specify a
+        single interface, you must specify it as an IP address.
+
+    controller tcp://127.0.0.1:2998
+        What address and port to bind on, and listen for inbound query and
+        control requests from management hosts. The default bind on loopback
+        (127.0.0.1) was chosen for security.
+
+    broadcast tcp://*:2997
+        What address and port to bind on, and broadcast data via.
+        Subscribers will need to connect to this endpoint to do their jobs.
+        As with listener and controller, specific interfaces can be bound,
+        but must be specified by IP address.
+
+    beacon tcp://*:2996
+        What address and port to bind on, and broadcast heartbeat beacons.
+        If beacon is not specified beaconing is disabled and will not send
+        messages. As with listener and controller, specific interfaces can
+        be bound, but must be specified by IP address.
+
+    sweep seconds
+        The time between sending BEACON messages to subscribed agents, in
+        seconds.
+
+        Defaults to 60 seconds
+
+    log info daemon
+        Controls how bolo logs, where it sends log messages, and what
+        messages are allowed to be logged.
+
+        The first token is the log level, one of debug, info, notice,
+        warning, error, alert, critical, or emergency.
+
+        The second token is the syslog facility to log to, one of daemon, or
+        local0-local7.
+
+    savefile /var/lib/bolo/save.db
+        bolo will periodically save its state, counter, sample and event
+        data to this file, to avoid data loss in the event of application or
+        host outages.
+
+    save.interval 15
+        The amount of time in seconds between which bolo save it's state to
+        disk.
+
+    save.size 4
+        The amount of memory in megabytes to allocate to the memory mapped
+        save file.
+
+    keysfile /var/lib/bolo/keys.db
+        The keysfile is like the savefile, except that user-provided
+        configuration data (via KEY statements through bolo-send(1)) will be
+        written there.
+
+    dumpfiles /var/tmp/mon.%s
+        NOTE: this configuration directive is DEPRECATED, and will be
+        ignored.
+
+        When bolo-query(1) initiates a DUMP to get all of the state, event
+        and metric data from bolo, that information is written to disk,
+        using this pattern to generate randomized temporary files. The first
+        `%s' will be replaced with a random value. Subsequent `%s' tokens
+        are ignored.
+
+    grace.period 15
+        Governs how long bolo will wait, after a metric window closes,
+        before broadcasting the final values out. This allows for delays in
+        the network.
+
+  Type Definitions
+    Each `type' stanza defines a named state type, which supplies some
+    configuration to each state tracked. State type names must always start
+    with a colon (:), and can consist only of alphanumeric characters,
+    hyphens (-) and underscores (_). Each type name must be unique.
+
+    NOTE: No state types will be defined by default.
+
+    Each type must define a freshness, the number of seconds bolo will wait
+    for a new STATE result before it decides that the state is stale, and
+    triggers a non-OK state synthetically.
+
+    Each type must also indicate what state to trigger on staleness, via the
+    critical, warning or unknown keywords. For example, to trigger a
+    staleness warning with the message "no results from last poll" after 5
+    minutes of nothing:
+
+        type :local-check {
+          freshness 300
+          warning "no results from last poll"
+        }
+
+  Window Definitions
+    When bolo receives metric data, it will attempt to buffer and aggregate
+    that data, according to the defined window.
+
+    For sampled data, datapoints are collected until the window rolls over,
+    and then an aggregate (average, variance, etc.) for that window and
+    those data points is broadcast.
+
+    For counter data, the value of the counter will increment until the
+    window rolls over.
+
+    For rate data, the difference between the first value seen in the
+    window, and the last value seen, will be divided over the window to come
+    up with a rate of change.
+
+    Each window has a name and a timeframe specified in seconds. All window
+    names start with the at-sign (@), and may consist only of alphanumeric
+    characters, hyphens (-) and underscores (_). Each window name must be
+    unique.
+
+    For example, to define two windows, one for hourly aggregation and
+    another for minutely aggregation:
+
+        window @minutely 60
+        window @hourly   3600
+
+  State Declarations
+    bolo requires you to identify what states it should manage. This can be
+    done either directly (one definition per state name) or indirectly (via
+    a pattern match). Each definition must tie the state name to a state
+    type (defined above)
+
+    Here, we define a single :local-check state, named www-health:
+
+        state :local-check www-health
+
+    Often, however, you'll want to define a pattern, to match more than one
+    state name, and save yourself the typing. Here, we instruct bolo to
+    accept all CPU-related states:
+
+        state :local-check m/cpu/
+
+  Sample & Counter Declarations
+    Like states, samples, rates and counters must be defined in order for
+    bolo to properly aggregate them. This can also be done directly, or via
+    pattern matching:
+
+        sample @minutely a-single-sample
+        sample @minutely m/:sar:/          # Matches host1:sar:df,
+                                           #         host2:sar:cpu, etc
+
+        counter @minutely m/transacts/
+        counter @minutely m/^http-40\d$/   # Matches http-403 and http-404,
+                                           # but not http-200 or  http-415.
+
+        rate    @minutely m/:cpu:/
+
+    You can also save some more typing with the `use' keyword, which elects
+    a metric window to be the default, for sample and counter definitions
+    that don't explicitly associate one:
+
+        use @hourly
+        counter hourly-counter1
+        counter m/-hourly$/
+        sample  hourly-transactions
+        rate    m/-per-hour$/
+
+SEE ALSO
+    bolo(7) for general information,
+
+    bolo(1) and bolo.conf(5) for documentation on the CLI tools,
+
+    dbolo(1), dbolo.conf(5) for details on the distributed bolo agent,
+
+    and read about subscribers in bolo2rrd(8), bolo2pg(8), bolo2meta(8), and
+    bolo2redis(8)
+
+AUTHOR
+    Bolo was designed and written by James Hunt and Dan Molik.</div>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+</body>
+</html>

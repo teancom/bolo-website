@@ -48,4 +48,19 @@ for my $post (@all) {
 		at    => "{site}/blog/{permalink}";
 }
 
+my @manpages = page->read_all(path "{data}/man");
+dir "{site}/man";
+for my $doc (@manpages) {
+	render $doc,
+		using => "man.tt",
+		at    => "{site}/man/{permalink}";
+}
+
+render {
+		page => page->read(path "{data}/pages/docs.yml"),
+		man  => \@manpages,
+	},
+	using => 'docs.tt',
+	at    => "{site}/docs",
+
 1;
