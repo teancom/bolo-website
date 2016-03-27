@@ -28,6 +28,7 @@
 <li><a href="/man/bolo-name.1.html">bolo-name(1)</a></li>
 <li><a href="/man/bolo-query.1.html">bolo-query(1)</a></li>
 <li><a href="/man/bolo-send.1.html">bolo-send(1)</a></li>
+<li><a href="/man/bolo-spy.1.html">bolo-spy(1)</a></li>
 <li><a href="/man/bolo.5.html">bolo(5)</a></li>
 <li><a href="/man/bolo2meta.8.html">bolo2meta(8)</a></li>
 <li><a href="/man/bolo2redis.8.html">bolo2redis(8)</a></li>
