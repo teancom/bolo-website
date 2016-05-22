@@ -20,7 +20,165 @@
 
 <h1>Getting Started</h1>
 
-<p>Coming soon</p>
+<p>To compile the software, use the standard incantation:</p>
+
+<pre><code>$ ./bootstrap
+$ ./configure
+$ make
+$ make check           # optional, but recommended
+$ sudo make install
+</code></pre>
+
+<p>This will compile and install all of the bolo components in
+standard systems places.  bolo requires libzmq3, pthreads, librrd,
+libpcre3 and <a href="https://github.com/jhunt/libvigor">libvigor</a> to run.  It uses <a href="https://github.com/jhunt/ctap">ctap</a> to
+run automated tests (which are, again, highly recommended).</p>
+
+<h2>A Minimal System</h2>
+
+<p>The core of every bolo deployment is the <code>bolo</code> daemon itself,
+which requires a configuration file, usually <strong>/etc/bolo.conf</strong>.</p>
+
+<pre><code># /etc/bolo.conf
+#
+listener   tcp://*:2999
+controller tcp://127.0.0.1:2998
+broadcast  tcp://*:2997
+
+log info daemon
+savefile /var/lib/bolo/save.db
+keysfile /var/lib/bolo/keys.db
+
+dumpfiles /var/tmp/bolo.%s
+
+type :generic {
+  freshness 60
+  critical "no result from monitored thing"
+}
+state :generic m/./
+
+window @minutely 60
+use @minutely
+sample  m/./
+counter m/./
+rate    m/./
+</code></pre>
+
+<p>This is a <strong>catch-all</strong> configuration, that expects all submitted
+metrics to be collected at at least a 1-minute resolution, and
+aggregate at the per-minute mark.  Check <strong>bolo.conf(5)</strong> for
+details and more advanced usage.</p>
+
+<p>You'll have to create the bolo user (or adjust how you launch the
+bolo daemon):</p>
+
+<pre><code>$ sudo useradd -rUd /var/lib/bolo -s /sbin/nologin bolo
+$ sudo mkdir /var/lib/bolo
+$ sudo chown -R bolo:bolo /var/lib/bolo
+</code></pre>
+
+<p>With this in place, start up the bolo daemon:</p>
+
+<pre><code>$ sudo bolo
+</code></pre>
+
+<p>By default, bolo starts up daemonized, and reads from
+/etc/bolo.conf.</p>
+
+<h2>Submitting Data</h2>
+
+<p>The <strong>send<em>bolo</strong> utility can be used to submit metrics and state
+data to bolo, via the _listener</em> port (TCP/2999 in our case):</p>
+
+<pre><code>$ send_bolo -e tcp://localhost:2999 -t sample life 42
+$ send_bolo -e tcp://localhost:2999 -t sample universe 42
+$ send_bolo -e tcp://localhost:2999 -t sample everything 42
+</code></pre>
+
+<p>At this point, you will probably want to go get
+<a href="https://github.com/bolo/bolo-collectors">bolo-collectors</a> installed to give you some real
+metric collectors, for real things like memory usage, swap rates,
+CPU time allocation, etc.  The output from these collectors can be
+piped directly into <strong>send_bolo</strong>:</p>
+
+<pre><code>$ /path/to/collector | send_bolo -e tcp://localhost:2999
+</code></pre>
+
+<p>With collectors installed, you can also run <strong>dbolo</strong>, the
+distributed bolo agent.  Create the <em>/etc/dbolo.conf</em>
+configuration file:</p>
+
+<pre><code># /etc/dbolo.conf
+@10s /usr/lib/bolo/collectors/linux
+@1h  /usr/lib/bolo/collectors/hostinfo
+</code></pre>
+
+<p>And then launch dbolo as a standalone daemon:</p>
+
+<pre><code>$ sudo dbolo
+</code></pre>
+
+<p>Now you've got a small agent process running and submitting
+Linux-y performance data every 10s, and host metadata every hour.</p>
+
+<h2>Using the Data</h2>
+
+<p>As the bolo daemon receives metrics and state data from monitored
+hosts, it aggregates the data and regularly broadcasts these
+summaries out to connected subscribers.  One such subscriber is
+<strong>bolo2rrd</strong>, which listens for samples, counters and rate data
+and creates / updates RRD files on disk.</p>
+
+<pre><code>$ sudo mkdir /srv/rrd
+$ sudo bolo2rrd -r /srv/rrd -e tcp://localhost:2997
+</code></pre>
+
+<p>bolo2rrd daemonizes into the background.</p>
+
+<p>The <strong>stat<em>bolo</strong> utility also has a _listen</em> mode wherein it
+connects to the broadcast port and prints out the data as it is
+received.  This can be useful for subscriber prototyping in
+languages like Perl or Ruby, without having to deal directly with
+0MQ and the bolo message protocol.</p>
+
+<pre><code>$ stat_bolo -e tcp://localhost:2997 -l | grep 'universe'
+</code></pre>
+
+<p>Writing subscribers isn't that difficult, and provides an
+interesting way of customizing the behavior of your monitoring
+system without needing to modify bolo itself.</p>
+
+<h2>Notes On Production Environments</h2>
+
+<p>If you're into <a href="http://bosh.io">BOSH</a> for your infrastructure, we have a
+<a href="https://github.com/bolo/bolo-boshrelease">bolo-boshrelease</a> you can check out!</p>
+
+<p>If you are operating inside of a more traditional server-centric
+environment, running on either Debian / Ubuntu or CentOS, you can
+take advantage of pre-built packages for bolo and it's
+dependencies, hosted on <a href="http://packagecloud.io">packagecloud</a>.</p>
+
+<p>For Debian/Ubuntu:</p>
+
+<pre><code>$ curl -s https://packagecloud.io/install/repositories/bolo/bolo/script.deb.sh | sudo bash
+$ sudo apt-get install bolo dbolo bolo-collectors
+</code></pre>
+
+<p>For CentOS:</p>
+
+<pre><code>$ curl -s https://packagecloud.io/install/repositories/bolo/bolo/script.rpm.sh | sudo bash
+$ sudo yum install bolo dbolo bolo-collectors
+</code></pre>
+
+<h2>Next Steps</h2>
+
+<p>Congratulations!  You have a bolo-based monitoring system up.</p>
+
+<p>So where do you go from here?</p>
+
+<p>You'll probably want to build a user-interface to display graphs
+rendered from the RRD files, even if that's just to render the
+images via cron and serve them up statically.</p>
 		<hr>
 		<div class="footer">
 			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
