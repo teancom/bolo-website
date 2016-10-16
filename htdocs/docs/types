@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,target-densitydpi=device-dpi" />
+<meta name="generator" content="verse" />
+<title>bolo</title>
+<link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="/css/site.css">
+<link rel="stylesheet" type="text/css" href="/mathscribe/jqmath-0.4.0.css" />
+<link rel="alternate home" type="application/rss+xml" title="bolo - RSS feed" href="/feed.xml">
+</head>
+<body>
+	<div class="container-narrow">
+		<div class="masthead">
+			<ul class="nav nav-pills pull-right"><li><a href="/">Home</a></li><li><a href="/download">Download</a></li><li class="active"><a href="/docs">Docs</a></li><li><a href="/community">Community</a></li><li><a href="/blog">Blog</a></li>
+			</ul>
+			<h3 class="muted">bolo</h3>
+		</div>
+<hr>
+
+<h1>Data Types</h1>
+
+<p>Bolo handles several different types of monitoring data, including
+metrics (measurements of some numerical value), events, and states.</p>
+
+<h2>Metric Types</h2>
+
+<p>A <em>metric</em> is something that can be measured.  CPU idle time is a
+metric, measured in seconds.  The number of free inodes on a mountpoint
+is another metric, measured as a count.</p>
+
+<p>Metrics come in several varieties, based on how the measurement is
+taken, and the <em>disposition</em> of the raw measurement.  These varieties
+are <strong>sample</strong>, <strong>counter</strong> and <strong>rate</strong>.</p>
+
+<h3>Sample Data</h3>
+
+<p><em>Samples</em> are used to measure steady-state information.  Each
+measurement stands alone and fully represents the thing it measures.
+Most metrics related to computer system health are treated as samples.</p>
+
+<p>For example, the number of running nginx workers is a <em>sample</em>.  A
+single number provides all the information you need to know about the
+size of the nginx worker pool at a given point in time.</p>
+
+<p>Highly variadic data can be difficult to monitor.  The number of
+connected TCP clients to a given server can change from second to
+second.  Measuring this value once a minute will often lead to skewed
+results, which in turn leads to misinformation and poorly-informed
+decision-making.  To help combat this, <em>sample</em> metrics can aggregate
+multiple measurements during the aggregation window, using several
+statistical methods.</p>
+
+<p>If a system is submitting a measurement every second, and bolo is
+configured to aggregate minutely, those 60 metrics will be analyzed to
+ascertain the <em>minimum</em> and <em>maximum</em> values, the <em>sum</em> of all
+measurements, the <em>mean</em> value measured, and the <em>statistical variance</em>
+of the sample set.</p>
+
+<h3>Counter Data</h3>
+
+<p>Sometimes you just want to count things.  How many failed logins
+occurred?  How many HTTP 404 responses did the web pool give out?  How
+many times are people clicking the "upgrade" link in the application?</p>
+
+<p>For this type of information, a <em>Counter</em> is ideal.  Its operation is
+mundanely simple &mdash;&nbsp;every time we get a value, increment the counter.
+If clients want to, they can batch up these increments and send a value
+to add to the counter.  When the aggregation window closes, the counter
+value resets to 0.</p>
+
+<h3>Rate Data</h3>
+
+<p>Some systems keep track of important quantities through the use of
+ever-increasing counters.  Routers will often increment a 64-bit counter
+every time they handle a packet.  By taking multiple measurements, at
+different points in time, one can calculate a <em>delta</em>, or change in
+value, which yields a rate of change measurement.</p>
+
+<p>That's what <em>Rate</em> metrics are.</p>
+
+<p>The bolo aggregator keeps track of the first and last values seen, and
+when those values were received.  During aggregation, this information
+is used to determine the rate of change over the entire aggregation
+window, using some extrapolation techniques.</p>
+
+<p>An example should help to make this a little clearer.</p>
+
+<p>Given an aggregation window of 60 seconds, we have the following
+timeline:</p>
+
+<p><img alt="Data Submission Timeline for Rate metric"
+     src="/docs/svg/rate-timeline.svg"></p>
+
+<p>At <var>t<sub>0</sub></var>, the window opens, and we have no previous value for the metric.
+Then, at <var>t<sub>1</sub></var>, a client submits a measurement of <code>v = 13</code>.  At this
+point, we know the starting value and its timestamp.</p>
+
+<p>Then, at <var>t<sub>2</sub></var>, a second measurement is submitted, <code>v = 15</code>.  We still
+have our first value, time pair (13, <var>t<sub>1</sub></var>), but now we can add to
+that our <em>last seen</em> value, time pair, (15, <var>t<sub>2</sub></var>).</p>
+
+<p>At <var>t<sub>4</sub></var>, we get a third measurement, <code>v = 17</code>.  Since this supercedes the
+measurement from <var>t<sub>3</sub></var>, and we haven't yet closed the window, we update
+the <em>last seen</em> value, time pair, leaving us with first = (13, <var>t<sub>1</sub></var>) and
+last = (17, <var>t<sub>3</sub></var>)</p>
+
+<p>Finally, at <var>t<sub>5</sub></var>, the window closes, we do rate calculation, and
+broadcast the value.  The actual formula for rate calculation is a bit
+involved:</p>
+
+<p>$$R = {v_L - v_F} / {t_L - t_F} w$$</p>
+
+<p>That is, the value delta, \(v_L - v_F\), divide by the time delta,
+\(t_L - t_F\), multipled by the window span, \(w\).</p>
+
+<p>The strategy in play here is to reduce the delta down to a per-second
+rate-of-change, and then multiple by the window (which is always handled
+in seconds) to get the per-window rate of change.</p>
+
+<p>If we took the naïve approach to calculating rate:</p>
+
+<p>$$R_{naïve} = {v_L - v_F} / w$$</p>
+
+<p>and then plug in the values from our example, \(v_F\) = 13 and
+\(v_L) = 17, with \(w\) = 60, we get:</p>
+
+<p>$$R_{naïve} = {17 - 13} / 60$$
+$$ = 4 / 60$$</p>
+
+<p>which equates to one new thing every 15 seconds.</p>
+
+<p>Let's assign some actual times to this timeline:</p>
+
+<ul>
+<li><var>t<sub>0</sub></var> = 12:13:00</li>
+<li><var>t<sub>1</sub></var> = 12:13:04</li>
+<li><var>t<sub>2</sub></var> = 12:13:24</li>
+<li><var>t<sub>3</sub></var> = 12:13:44</li>
+<li><var>t<sub>4</sub></var> = 12:14:00</li>
+</ul>
+
+<p>Between <var>t<sub>1</sub></var> and <var>t<sub>2</sub></var>, we had a net change of \(2 / 20\), or 1 new thing
+every 10 seconds.  Likewise, between <var>t<sub>2</sub></var> and <var>t<sub>2</sub></var>, we had another net
+change of \(2 / 20\).</p>
+
+<p>If we were to extrapolate to a minutely basis, there are 6 ten-second
+periods in a minute, so we intuitively expect a minutely rate of 6 new
+things per minute.</p>
+
+<p>The naïve formula mistakenly calculates 4/min, precisely because it
+mis-handles this extrapolation.</p>
+
+<p>Instead, the real formula:</p>
+
+<p>$$R = {v_L - v_F} / {t_L - t_F} w$$</p>
+
+<p>first calculates a per-second rate, and then extrapolates to per-window.
+Dropping in our values and timestamps (ignoring the hours and minutes
+because they are irrelevant here), we get:</p>
+
+<p>$$R = {{17 - 13} / {44 - 4}} 60$$</p>
+
+<p>$$= {4 / 40} 60$$</p>
+
+<p>$$= 6$$</p>
+
+<h2>State Data</h2>
+
+<p>A key function of any monitoring system is the ability to detect
+problems and react to them, either by notifying a human operator, or
+attempting a pre-programmed fix.  For this, bolo provides <em>States</em>.</p>
+
+<p>Each <em>State</em> has:</p>
+
+<ul>
+<li>A <strong>name</strong>, to differentiate this state from all the others,</li>
+<li>A <strong>status</strong> of either <em>OK</em>, <em>WARNING</em>, <em>CRITICAL</em> or <em>UNKNOWN</em>,</li>
+<li>A <strong>freshness</strong> flag that indicates whether or not bolo has recently
+received confirmation of the current state, and</li>
+<li>A <strong>summary message</strong> which provides a more detailed explanation of
+the current state / status (i.e. <em>why</em> is the state warning?)</li>
+</ul>
+
+<p>The bolo aggregator tracks state submissions and derives the <em>freshness</em>
+flag accordingly.  It also synthesizes <em>transition notifications</em>
+whenever the status value changes.  Therefore, if a previously OK state
+becomes CRITICAL, the aggregator will broadcast a <em>TRANSITION</em>
+indicating the change.  This edge-triggering of state data can be useful
+for subscribers wishing to perform notification on problem detection and
+associated recovery.</p>
+
+<h2>Event Data</h2>
+
+<p>State and metric changes rarely happen in a vacuum.  Servers reboot,
+firewalls get reconfigured, processes bounce.  These types of events can
+be tracked in bolo via <em>Events</em>.</p>
+
+<p>An event is little more than a description (<em>what happened?</em>) and a
+timestamp (<em>when did it happen?</em>).  Clients submit these events to bolo,
+and bolo in turn broadcasts them to interested subscribers.  No real
+aggregation or de-duplication is performed on events.</p>
+		<hr>
+		<div class="footer">
+			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
+		</div>
+	</div>
+
+	<script type="text/javascript" src="/js/jquery.js"></script>
+	<script type="text/javascript" src="/mathscribe/jqmath-etc-0.4.0.min.js"></script>
+</body>
+</html>

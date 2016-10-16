@@ -1,0 +1,195 @@
+# vim:ft=markdown:tw=72
+title:   bolo - Data Types
+url:     /docs/types
+section: /docs
+format:  markdown
+replace:
+  t.0: <var>t<sub>0</sub></var>
+  t.1: <var>t<sub>1</sub></var>
+  t.2: <var>t<sub>2</sub></var>
+  t.3: <var>t<sub>3</sub></var>
+  t.4: <var>t<sub>4</sub></var>
+  t.5: <var>t<sub>5</sub></var>
+  ' -- ':  ' &mdash;&nbsp;'
+--- |-
+--------------------
+# Data Types
+
+Bolo handles several different types of monitoring data, including
+metrics (measurements of some numerical value), events, and states.
+
+## Metric Types
+
+A _metric_ is something that can be measured.  CPU idle time is a
+metric, measured in seconds.  The number of free inodes on a mountpoint
+is another metric, measured as a count.
+
+Metrics come in several varieties, based on how the measurement is
+taken, and the _disposition_ of the raw measurement.  These varieties
+are **sample**, **counter** and **rate**.
+
+### Sample Data
+
+_Samples_ are used to measure steady-state information.  Each
+measurement stands alone and fully represents the thing it measures.
+Most metrics related to computer system health are treated as samples.
+
+For example, the number of running nginx workers is a _sample_.  A
+single number provides all the information you need to know about the
+size of the nginx worker pool at a given point in time.
+
+Highly variadic data can be difficult to monitor.  The number of
+connected TCP clients to a given server can change from second to
+second.  Measuring this value once a minute will often lead to skewed
+results, which in turn leads to misinformation and poorly-informed
+decision-making.  To help combat this, _sample_ metrics can aggregate
+multiple measurements during the aggregation window, using several
+statistical methods.
+
+If a system is submitting a measurement every second, and bolo is
+configured to aggregate minutely, those 60 metrics will be analyzed to
+ascertain the _minimum_ and _maximum_ values, the _sum_ of all
+measurements, the _mean_ value measured, and the _statistical variance_
+of the sample set.
+
+// FIXME: go over some examples, with numbers
+
+### Counter Data
+
+Sometimes you just want to count things.  How many failed logins
+occurred?  How many HTTP 404 responses did the web pool give out?  How
+many times are people clicking the "upgrade" link in the application?
+
+For this type of information, a _Counter_ is ideal.  Its operation is
+mundanely simple -- every time we get a value, increment the counter.
+If clients want to, they can batch up these increments and send a value
+to add to the counter.  When the aggregation window closes, the counter
+value resets to 0.
+
+### Rate Data
+
+Some systems keep track of important quantities through the use of
+ever-increasing counters.  Routers will often increment a 64-bit counter
+every time they handle a packet.  By taking multiple measurements, at
+different points in time, one can calculate a _delta_, or change in
+value, which yields a rate of change measurement.
+
+That's what _Rate_ metrics are.
+
+The bolo aggregator keeps track of the first and last values seen, and
+when those values were received.  During aggregation, this information
+is used to determine the rate of change over the entire aggregation
+window, using some extrapolation techniques.
+
+An example should help to make this a little clearer.
+
+Given an aggregation window of 60 seconds, we have the following
+timeline:
+
+<img alt="Data Submission Timeline for Rate metric"
+     src="/docs/svg/rate-timeline.svg">
+
+At t.0, the window opens, and we have no previous value for the metric.
+Then, at t.1, a client submits a measurement of `v = 13`.  At this
+point, we know the starting value and its timestamp.
+
+Then, at t.2, a second measurement is submitted, `v = 15`.  We still
+have our first value, time pair (13, t.1), but now we can add to
+that our _last seen_ value, time pair, (15, t.2).
+
+At t.4, we get a third measurement, `v = 17`.  Since this supercedes the
+measurement from t.3, and we haven't yet closed the window, we update
+the _last seen_ value, time pair, leaving us with first = (13, t.1) and
+last = (17, t.3)
+
+Finally, at t.5, the window closes, we do rate calculation, and
+broadcast the value.  The actual formula for rate calculation is a bit
+involved:
+
+$$R = {v\_L - v\_F} / {t\_L - t\_F} w$$
+
+That is, the value delta, \\(v\_L - v\_F\\), divide by the time delta,
+\\(t\_L - t\_F\\), multipled by the window span, \\(w\\).
+
+The strategy in play here is to reduce the delta down to a per-second
+rate-of-change, and then multiple by the window (which is always handled
+in seconds) to get the per-window rate of change.
+
+If we took the naïve approach to calculating rate:
+
+$$R\_{naïve} = {v\_L - v\_F} / w$$
+
+and then plug in the values from our example, \\(v\_F\\) = 13 and
+\\(v\_L) = 17, with \\(w\\) = 60, we get:
+
+$$R\_{naïve} = {17 - 13} / 60$$
+$$ = 4 / 60$$
+
+which equates to one new thing every 15 seconds.
+
+Let's assign some actual times to this timeline:
+
+  - t.0 = 12:13:00
+  - t.1 = 12:13:04
+  - t.2 = 12:13:24
+  - t.3 = 12:13:44
+  - t.4 = 12:14:00
+
+Between t.1 and t.2, we had a net change of \\(2 / 20\\), or 1 new thing
+every 10 seconds.  Likewise, between t.2 and t.2, we had another net
+change of \\(2 / 20\\).
+
+If we were to extrapolate to a minutely basis, there are 6 ten-second
+periods in a minute, so we intuitively expect a minutely rate of 6 new
+things per minute.
+
+The naïve formula mistakenly calculates 4/min, precisely because it
+mis-handles this extrapolation.
+
+Instead, the real formula:
+
+$$R = {v\_L - v\_F} / {t\_L - t\_F} w$$
+
+first calculates a per-second rate, and then extrapolates to per-window.
+Dropping in our values and timestamps (ignoring the hours and minutes
+because they are irrelevant here), we get:
+
+$$R = {{17 - 13} / {44 - 4}} 60$$
+
+$$= {4 / 40} 60$$
+
+$$= 6$$
+
+## State Data
+
+A key function of any monitoring system is the ability to detect
+problems and react to them, either by notifying a human operator, or
+attempting a pre-programmed fix.  For this, bolo provides _States_.
+
+Each _State_ has:
+
+- A **name**, to differentiate this state from all the others,
+- A **status** of either _OK_, _WARNING_, _CRITICAL_ or _UNKNOWN_,
+- A **freshness** flag that indicates whether or not bolo has recently
+  received confirmation of the current state, and
+- A **summary message** which provides a more detailed explanation of
+  the current state / status (i.e. _why_ is the state warning?)
+
+The bolo aggregator tracks state submissions and derives the _freshness_
+flag accordingly.  It also synthesizes _transition notifications_
+whenever the status value changes.  Therefore, if a previously OK state
+becomes CRITICAL, the aggregator will broadcast a _TRANSITION_
+indicating the change.  This edge-triggering of state data can be useful
+for subscribers wishing to perform notification on problem detection and
+associated recovery.
+
+## Event Data
+
+State and metric changes rarely happen in a vacuum.  Servers reboot,
+firewalls get reconfigured, processes bounce.  These types of events can
+be tracked in bolo via _Events_.
+
+An event is little more than a description (_what happened?_) and a
+timestamp (_when did it happen?_).  Clients submit these events to bolo,
+and bolo in turn broadcasts them to interested subscribers.  No real
+aggregation or de-duplication is performed on events.

@@ -65,3 +65,9 @@ div.man {
 	padding: 1em;
 	background-color: #eee;
 }
+
+var {
+  font-weight: bold;
+  font-style:  normal;
+  font-family: monospace;
+}
