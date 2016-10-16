@@ -41,7 +41,7 @@ render { featured => $featured, rest => [@featured] },
 	using => "blog.tt",
 	at    => "{site}/blog/index.html";
 
-dir "{site}/writings";
+dir "{site}/blog";
 for my $post (@all) {
 	render $post,
 		using => "article.tt",
