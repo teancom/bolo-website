@@ -57,10 +57,10 @@ for my $doc (@manpages) {
 }
 
 render {
-		page => page->read(path "{data}/pages/docs.yml"),
+		page => page->read(path "{data}/pages/docs/index.yml"),
 		man  => [sort { $a->{__attrs}{url} cmp $b->{__attrs}{url} } @manpages],
 	},
 	using => 'docs.tt',
-	at    => "{site}/docs",
+	at    => "{site}/docs/index.html",
 
 1;
