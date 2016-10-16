@@ -45,9 +45,9 @@
 			<ul class="nav nav-pills pull-right">
 				[% if page.attrs.section == "/" %]<li class="active">[% else %]<li>[% end %]<a href="/">Home</a></li>
 				[% if page.attrs.section == "/download" %]<li class="active">[% else %]<li>[% end %]<a href="/download">Download</a></li>
-				[% if page.attrs.section == "/docs" or page.attrs.man %]<li class="active">[% else %]<li>[% end %]<a href="/docs">Docs</a></li>
+				[% if page.attrs.section == "/docs" || page.attrs.man %]<li class="active">[% else %]<li>[% end %]<a href="/docs">Docs</a></li>
 				[% if page.attrs.section == "/community" %]<li class="active">[% else %]<li>[% end %]<a href="/community">Community</a></li>
-				[% if article %]<li class="active">[% else %]<li>[% end %]<a href="/blog">Blog</a></li>
+				[% if featured || article %]<li class="active">[% else %]<li>[% end %]<a href="/blog">Blog</a></li>
 			</ul>
 			<h3 class="muted">bolo</h3>
 		</div>
