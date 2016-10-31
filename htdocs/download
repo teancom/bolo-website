@@ -23,20 +23,29 @@
 
 <h2>Packages</h2>
 
-<p>We are not currently building platform-specific pacakges for bolo (i.e RPMs
-for CentOS / Fedora or DEBs for Debian / Ubuntu).  If you would like to
-volunteer to figure out how to hook our Travis CI builds up to a packager +
-publicly-accessible APT/YUM repo, <a href="mailto:bolo-dev@lists.niftylogic.com">let us know!</a></p>
+<p>If you are running Debian/Ubuntu or RHEL/CentOS, you can take advantage of pre-built packages for bolo and it's dependencies, hosted on packagecloud.
+
+For Debian/Ubuntu:
+<pre>
+$ curl -s https://packagecloud.io/install/repositories/bolo/bolo/script.deb.sh | sudo bash
+$ sudo apt-get install bolo dbolo bolo-collectors
+</pre>
+
+For CentOS:
+<pre>
+$ curl -s https://packagecloud.io/install/repositories/bolo/bolo/script.rpm.sh | sudo bash
+$ sudo yum install bolo dbolo bolo-collectors</p>
+</pre>
 
 <h2>Source</h2>
 
-<p>The current stable version of <strong>bolo</strong> (core) is <strong>0.2.12</strong>:
-<a href="https://github.com/filefrog/bolo/archive/v0.2.12.tar.gz">tar.gz</a> | <a href="https://github.com/filefrog/bolo/archive/v0.2.12.zip">zip</a> | <a href="https://github.com/filefrog/bolo/tree/v0.2.12">git</a></p>
+<p>The current stable version of <strong>bolo</strong> (core) is <strong>0.2.20</strong>:
+<a href="https://github.com/bolo/bolo/archive/v0.2.20.tar.gz">tar.gz</a> | <a href="https://github.com/bolo/bolo/archive/v0.2.20.zip">zip</a> | <a href="https://github.com/bolo/bolo/tree/v0.2.20">git</a></p>
 
-<p>The current stable version of the <strong>bolo-collectors</strong> is <strong>0.4.7</strong>:
-<a href="https://github.com/filefrog/bolo-collectors/archive/v0.4.7.tar.gz">tar.gz</a> | <a href="https://github.com/filefrog/bolo-collectors/archive/v0.4.7.zip">zip</a> | <a href="https://github.com/filefrog/bolo-collectors/tree/v0.4.7">git</a></p>
+<p>The current stable version of the <strong>bolo-collectors</strong> is <strong>0.4.13</strong>:
+<a href="https://github.com/bolo/bolo-collectors/archive/v0.4.13.tar.gz">tar.gz</a> | <a href="https://github.com/bolo/bolo-collectors/archive/v0.4.13.zip">zip</a> | <a href="https://github.com/bolo/bolo-collectors/tree/v0.4.13">git</a></p>
 
-<p>Older releases are available at <a href="https://github.com/filefrog/bolo/releases">Github</a>.</p>
+<p>Older releases are available at <a href="https://github.com/bolo/bolo/releases">Github</a>.</p>
 		<hr>
 		<div class="footer">
 			<p>&copy; 2016 The Bolo Authors.  Powered by <a href="http://verse.jameshunt.us" target="_blank">Verse</a></p>
