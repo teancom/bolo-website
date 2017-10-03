@@ -71,7 +71,7 @@ By default, bolo starts up daemonized, and reads from
 Submitting Data
 ---------------
 
-The **send_bolo** utility can be used to submit metrics and state
+The **send\_bolo** utility can be used to submit metrics and state
 data to bolo, via the _listener_ port (TCP/2999 in our case):
 
     $ send_bolo -e tcp://localhost:2999 -t sample life 42
@@ -82,7 +82,7 @@ At this point, you will probably want to go get
 [bolo-collectors][collectors] installed to give you some real
 metric collectors, for real things like memory usage, swap rates,
 CPU time allocation, etc.  The output from these collectors can be
-piped directly into **send_bolo**:
+piped directly into **send\_bolo**:
 
     $ /path/to/collector | send_bolo -e tcp://localhost:2999
 
@@ -115,7 +115,7 @@ and creates / updates RRD files on disk.
 
 bolo2rrd daemonizes into the background.
 
-The **stat_bolo** utility also has a _listen_ mode wherein it
+The **stat\_bolo** utility also has a _listen_ mode wherein it
 connects to the broadcast port and prints out the data as it is
 received.  This can be useful for subscriber prototyping in
 languages like Perl or Ruby, without having to deal directly with
