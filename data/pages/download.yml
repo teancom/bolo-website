@@ -15,21 +15,21 @@ publicly-accessible APT/YUM repo, [let us know!][contact]
 
 ## Source
 
-The current stable version of **bolo** (core) is **0.2.12**:
+The current stable version of **bolo** (core) is **0.3.0**:
 [tar.gz][1] | [zip][2] | [git][3]
 
-The current stable version of the **bolo-collectors** is **0.4.7**:
+The current stable version of the **bolo-collectors** is **0.4.13**:
 [tar.gz][4] | [zip][5] | [git][6]
 
 Older releases are available at [Github][gh-releases].
 
-[gh-releases]: https://github.com/filefrog/bolo/releases
+[gh-releases]: https://github.com/bolo/bolo/releases
 [contact]:     mailto:bolo-dev@lists.niftylogic.com
 
-[1]: https://github.com/filefrog/bolo/archive/v0.2.12.tar.gz
-[2]: https://github.com/filefrog/bolo/archive/v0.2.12.zip
-[3]: https://github.com/filefrog/bolo/tree/v0.2.12
+[1]: https://github.com/bolo/bolo/archive/v0.3.0.tar.gz
+[2]: https://github.com/bolo/bolo/archive/v0.3.0.zip
+[3]: https://github.com/bolo/bolo/tree/v0.3.0
 
-[4]: https://github.com/filefrog/bolo-collectors/archive/v0.4.7.tar.gz
-[5]: https://github.com/filefrog/bolo-collectors/archive/v0.4.7.zip
-[6]: https://github.com/filefrog/bolo-collectors/tree/v0.4.7
+[4]: https://github.com/bolo/bolo-collectors/archive/v0.4.13.tar.gz
+[5]: https://github.com/bolo/bolo-collectors/archive/v0.4.13.zip
+[6]: https://github.com/bolo/bolo-collectors/tree/v0.4.13
