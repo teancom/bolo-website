@@ -72,6 +72,7 @@ Submitting Data
 ---------------
 
 The **bolo send** subcommand can be used to submit metrics and state
+
 data to bolo, via the _listener_ port (TCP/2999 in our case):
 
     $ bolo send -e tcp://localhost:2999 -t sample life 42
