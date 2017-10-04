@@ -15,9 +15,11 @@ To compile the software, use the standard incantation:
     $ sudo make install
 
 This will compile and install all of the bolo components in
-standard systems places.  bolo requires libzmq3, pthreads, librrd,
-libpcre3 and [libvigor][libvigor] to run.  It uses [ctap][ctap] to
-run automated tests (which are, again, highly recommended).
+standard systems places.  bolo requires [libzmq3](http://zeromq.org/area:download),
+pthreads, [librrd](https://oss.oetiker.ch/rrdtool/download.en.html),
+[libpcre3](http://www.pcre.org) and [libvigor][libvigor] to run.  It uses
+[ctap][ctap] and [ztk][ztk] to run automated tests (which are, again, highly
+recommended). Most packages should be available from your distro of choice.
 
 A Minimal System
 ----------------
