@@ -56,10 +56,10 @@ $ git clone https://github.com/bolo/bolo-collectors.git
 ...
 </code></pre>
 
-<p>To build bolo, you'll need a recent vintage of 0MQ, <a href="https://github.com/filefrog/libvigor">libvigor</a> and
-<a href="https://github.com/filefrog/ctap">ctap</a> for the tests.</p>
+<p>To build bolo, you'll need a recent vintage of 0MQ, <a href="https://github.com/jhunt/libvigor">libvigor</a> and
+<a href="https://github.com/jhunt/ctap">ctap</a> for the tests.</p>
 
-<p>bolo-collectors only needs <a href="https://github.com/filefrog/libvigor">libvigor</a>.</p>
+<p>bolo-collectors only needs <a href="https://github.com/jhunt/libvigor">libvigor</a>.</p>
 
 <h2>Continuous Integration</h2>
 
