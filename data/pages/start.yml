@@ -37,8 +37,6 @@ which requires a configuration file, usually **/etc/bolo.conf**.
     savefile /var/lib/bolo/save.db
     keysfile /var/lib/bolo/keys.db
 
-    dumpfiles /var/tmp/bolo.%s
-
     type :generic {
       freshness 60
       critical "no result from monitored thing"
@@ -65,7 +63,7 @@ bolo daemon):
 
 With this in place, start up the bolo daemon:
 
-    $ sudo bolo
+    $ sudo -u bolo bolo aggr
 
 By default, bolo starts up daemonized, and reads from
 /etc/bolo.conf.
@@ -73,12 +71,12 @@ By default, bolo starts up daemonized, and reads from
 Submitting Data
 ---------------
 
-The **send\_bolo** utility can be used to submit metrics and state
+The **bolo send** subcommand can be used to submit metrics and state
 data to bolo, via the _listener_ port (TCP/2999 in our case):
 
-    $ send_bolo -e tcp://localhost:2999 -t sample life 42
-    $ send_bolo -e tcp://localhost:2999 -t sample universe 42
-    $ send_bolo -e tcp://localhost:2999 -t sample everything 42
+    $ bolo send -e tcp://localhost:2999 -t sample life 42
+    $ bolo send -e tcp://localhost:2999 -t sample universe 42
+    $ bolo send -e tcp://localhost:2999 -t sample everything 42
 
 At this point, you will probably want to go get
 [bolo-collectors][collectors] installed to give you some real

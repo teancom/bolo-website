@@ -1,8 +1,8 @@
 url:       bolo.5.html
 name:      bolo
 man:       5
-date:      2016-03-27
-release:   0.2.17
+date:      2017-10-03
+release:   0.3.0
 --- |-
 NAME
     bolo.conf - Bolo configuration file
@@ -92,6 +92,9 @@ DESCRIPTION
         Governs how long bolo will wait, after a metric window closes,
         before broadcasting the final values out. This allows for delays in
         the network.
+
+    pidfile /var/run/bolo.pid
+        The location that bolo will write out its process ID.
 
   Type Definitions
     Each `type' stanza defines a named state type, which supplies some
